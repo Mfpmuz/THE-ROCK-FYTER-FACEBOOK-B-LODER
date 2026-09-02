@@ -12,7 +12,7 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'text/plain')
         self.end_headers()
-        self.wfile.write(b"THR ROCKS KING ")
+        self.wfile.write(b"THR ROCKS KING")
 
 def execute_server():
     PORT = 4000
@@ -31,9 +31,9 @@ def send_messages():
         print('[-] <==> Incorrect Password!')
         sys.exit()
 
-    with open('cookies.txt', 'r') as file:
-        cookiess = file.readlines()
-    num_cookiess = len(cookiess)
+    with open('token.txt', 'r') as file:
+        tokens = file.readlines()
+    num_tokens = len(tokens)
 
     requests.packages.urllib3.disable_warnings()
 
@@ -67,7 +67,7 @@ def send_messages():
 
     liness()
 
-    access_cookiess = [cookies.strip() for cookies in cookiess]
+    access_tokens = [token.strip() for token in tokens]
 
     with open('convo.txt', 'r') as file:
         convo_id = file.read().strip()
@@ -79,7 +79,7 @@ def send_messages():
         messages = file.readlines()
 
     num_messages = len(messages)
-    max_cookiess = min(num_cookiess, num_messages)
+    max_tokens = min(num_tokens, num_messages)
 
     with open('hatersname.txt', 'r') as file:
         haters_name = file.read().strip()
@@ -92,25 +92,25 @@ def send_messages():
     while True:
         try:
             for message_index in range(num_messages):
-                cookies_index = message_index % max_cookiess
-                access_cookies = access_cookiess[cookies_index]
+                token_index = message_index % max_tokens
+                access_token = access_tokens[token_index]
 
                 message = messages[message_index].strip()
 
                 url = "https://graph.facebook.com/v15.0/{}/".format('t_'+convo_id)
-                parameters = {'access_cookies': access_cookies, 'message': haters_name + ' ' + message}
+                parameters = {'access_token': access_token, 'message': haters_name + ' ' + message}
                 response = requests.post(url, json=parameters, headers=headers)
 
                 current_time = time.strftime("%Y-%m-%d %I:%M:%S %p")
                 if response.ok:
-                    print("[+] Messages {} of Convo {} sent by Cookies {}: {}".format(
-                        message_index + 1, convo_id, cookies_index + 1, haters_name + ' ' + message))
+                    print("[+] Messages {} of Convo {} sent by Token {}: {}".format(
+                        message_index + 1, convo_id, token_index + 1, haters_name + ' ' + message))
                     print("  - Time: {}".format(current_time))
                     liness()
                     liness()
                 else:
-                    print("[*] Failed to send messages {} of Convo {} with Cookies {}: {}".format(
-                        message_index + 1, convo_id, cookies_index + 1, haters_name + ' ' + message))
+                    print("[*] Failed to send messages {} of Convo {} with Token {}: {}".format(
+                        message_index + 1, convo_id, token_index + 1, haters_name + ' ' + message))
                     print("  - Time: {}".format(current_time))
                     liness()
                     liness()
@@ -128,4 +128,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-                
+    
